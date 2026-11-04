@@ -1,0 +1,15 @@
+
+
+// Répertoire de l'éxécutable de Godot
+Godot_v4.7.2-stable_win64.exe
+
+// Répertoire de l'éxécutable de Arduino
+arduino-ide_2.3.10_Windows_64bit
+
+// Build de HMI
+HMI/build
+
+// Fichier donné de base
+MPS.zip
+
+
