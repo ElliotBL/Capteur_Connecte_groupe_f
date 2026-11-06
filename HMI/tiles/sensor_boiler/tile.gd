@@ -5,6 +5,8 @@ const DEVICE_NAME = "sensor_f"
 const SUB_HB = "hb_" + DEVICE_NAME
 const SUB_STATUS_COUNTER = "status_" + DEVICE_NAME + "_counter"
 const SUB_CMD_RESET = "cmd_" + DEVICE_NAME + "_reset_counter"
+const SUB_STATUS_TEMPERATURE = "status_" + DEVICE_NAME + "_temperature"
+const SUB_STATUS_HUMIDITY = "status_" + DEVICE_NAME + "_humidity"
 ## Délai sans heartbeat au-delà duquel le capteur est considéré comme bloqué (3,5 périodes de 1 s).
 const HB_TIMEOUT_S := 3.5
 ## Durée d'allumage de l'icône de heartbeat à chaque réception.
@@ -28,12 +30,16 @@ var _connected: bool = false:
 
 func _ready() -> void:
 	super() # obligatoire : c'est lui qui abonne la tuile
-	%ResetButton.pressed.connect(func(): publish(SUB_CMD_RESET, PackedByteArray(), true))
+	%ResetCounterButton.pressed.connect(func(): publish(SUB_CMD_RESET, PackedByteArray(), true))
 
 func get_subscriptions() -> PackedStringArray:
 	var subscriptions: PackedStringArray = []
+	
+	# Sans ces ligne, on_message ne reçoit rien
 	subscriptions.append(SUB_HB)
-	subscriptions.append(SUB_STATUS_COUNTER) # sans cette ligne, on_message ne reçoit rien
+	subscriptions.append(SUB_STATUS_COUNTER)
+	subscriptions.append(SUB_STATUS_TEMPERATURE)
+	subscriptions.append(SUB_STATUS_HUMIDITY)
 	return subscriptions
 
 
@@ -61,8 +67,14 @@ func on_message(subject_name: String, source_id: int, payload: PackedByteArray) 
 	if subject_name == SUB_STATUS_COUNTER:
 		if payload.size() != 4: return # le contrat : 4 octets, sinon on ignore
 		%CounterLabel.text = "Compteur : %d" % payload.decode_u32(0)
-
-
+	if subject_name == SUB_STATUS_TEMPERATURE:
+		if payload.size() != 4: return # le contrat : 4 octets, sinon on ignore
+		%TemperatureLabel.text = "Température : %d" % payload.decode_float(0)
+	if subject_name == SUB_STATUS_HUMIDITY:
+		if payload.size() != 4: return # le contrat : 4 octets, sinon on ignore
+		%HumidityLabel.text = "Humidité : %d" % payload.decode_float(0)
+	
+	
 func _process(delta: float) -> void:
 	_seconds_since_hb += delta
 	%HeartbeatIcon.state = _seconds_since_hb < HB_BLINK_S
@@ -88,5 +100,4 @@ func _on_hb(source_id: int):
 	_seconds_since_hb = 0.0
 	_connected = true
 
-	
 	

@@ -6,24 +6,24 @@
 
 // Structure des données
 struct __attribute__((packed)) CounterPayload {
-  uint32_t value;
+  uint32_t count;
 };
 static_assert(sizeof(CounterPayload) == 4, "CounterPayload = 4 octets");
 
 // Structure des données reçues
 struct __attribute__((packed)) ResetCounterPayload {
-  uint32_t value;
+  uint32_t newValue;
 };
 static_assert(sizeof(ResetCounterPayload) == 4, "ResetCounterPayload = 4 octets");
 
 struct __attribute__((packed)) TemperaturePayload {
-    float value;
+    float degree;
 };
 static_assert(sizeof(TemperaturePayload) == 4, "TemperaturePayload = 4 octets");
 
 
 struct __attribute__((packed)) HumidityPayload {
-    float value;
+    float percentage;
 };
 static_assert(sizeof(HumidityPayload) == 4, "HumidityPayload = 4 octets");
 
@@ -55,14 +55,16 @@ static void onSessionOpened() {
   Serial.println("Session opened!");
   // republiez ici l’état initial, la passerelle ne garde rien
   MPS.publishValue(kSubStatusCounter, counter);
+  MPS.publishValue(kSubStatusTemperature, temperature);
+  MPS.publishValue(kSubStatusHumidity, humidity);
 }
 
 static void onCmdReset(const mps::FrameView& message, void*) {
   ResetCounterPayload payload;
 
   // Si la valeur du payload est à la longueur voulu alors le conteur se réinitialise à cette valeur, à 0 sinon
-  if (mps::readPayloadAs(message, &payload)) counter.value = payload.value;
-  else counter.value = 0;
+  if (mps::readPayloadAs(message, &payload)) counter.count = payload.newValue;
+  else counter.count = 0;
   
   MPS.publishValue(kSubStatusCounter, counter); // l'IHM voit le résultat réel
 }
@@ -116,7 +118,7 @@ void loop() {
   static uint32_t lastCounterTimeMs = 0;
   if (millis() - lastCounterTimeMs >= 2000) {
     lastCounterTimeMs = millis();
-    counter.value++;
+    counter.count++;
     MPS.publishValue(kSubStatusCounter, counter);
   }
 
@@ -128,8 +130,8 @@ void loop() {
 
     // Vérification des mesures
     if (!isnan(temperatureReaded) && !isnan(humidityReaded)) {
-      temperature.value = temperatureReaded;
-      humidity.value = humidityReaded;
+      temperature.degree = temperatureReaded;
+      humidity.percentage = humidityReaded;
 
       MPS.publishValue(kSubStatusTemperature, temperature);
       MPS.publishValue(kSubStatusHumidity, humidity);
