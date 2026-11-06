@@ -134,12 +134,6 @@ void loop() {
       MPS.publishValue(kSubStatusTemperature, temperature);
       MPS.publishValue(kSubStatusHumidity, humidity);
     }
-    else {
-      temperature.value = 999;
-      humidity.value = 999;
-      MPS.publishValue(kSubStatusTemperature, temperature);
-      MPS.publishValue(kSubStatusHumidity, humidity);
-    }
   }
 
 }
