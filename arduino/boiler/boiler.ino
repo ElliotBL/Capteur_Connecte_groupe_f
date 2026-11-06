@@ -1,4 +1,5 @@
 #include <MPS.h>
+#include <DHT.h>
 #include "config.h"
 
 // ---- Structures de payloads ----
@@ -10,17 +11,37 @@ struct __attribute__((packed)) CounterPayload {
 static_assert(sizeof(CounterPayload) == 4, "CounterPayload = 4 octets");
 
 // Structure des données reçues
-struct __attribute__((packed)) ResetPayload {
+struct __attribute__((packed)) ResetCounterPayload {
   uint32_t value;
 };
-static_assert(sizeof(ResetPayload) == 4, "ResetPayload = 4 octets");
+static_assert(sizeof(ResetCounterPayload) == 4, "ResetCounterPayload = 4 octets");
+
+struct __attribute__((packed)) TemperaturePayload {
+    float value;
+};
+static_assert(sizeof(TemperaturePayload) == 4, "TemperaturePayload = 4 octets");
+
+
+struct __attribute__((packed)) HumidityPayload {
+    float value;
+};
+static_assert(sizeof(HumidityPayload) == 4, "HumidityPayload = 4 octets");
 
 // ---- Variables globales ----
 static CounterPayload counter = {0};
+constexpr int kDhtPin = 0; // Broche connecté au DHT11
+static TemperaturePayload temperature;
+static HumidityPayload humidity;
+
 // ---- Subjects ----
 constexpr mps::Subject kSubHb = mps::makeSubject("hb_" DEVICE_NAME); // déjà présent
 constexpr mps::Subject kSubStatusCounter = mps::makeSubject("status_" DEVICE_NAME "_counter");
 constexpr mps::Subject kSubCmdResetCounter = mps::makeSubject("cmd_" DEVICE_NAME "_reset_counter");
+constexpr mps::Subject kSubStatusTemperature = mps::makeSubject("status_" DEVICE_NAME "_temperature");
+constexpr mps::Subject kSubStatusHumidity = mps::makeSubject("status_" DEVICE_NAME "_humidity");
+
+
+DHT dht(kDhtPin, DHT11);
 
 // ---- Callbacks ----
 
@@ -37,7 +58,7 @@ static void onSessionOpened() {
 }
 
 static void onCmdReset(const mps::FrameView& message, void*) {
-  ResetPayload payload;
+  ResetCounterPayload payload;
 
   // Si la valeur du payload est à la longueur voulu alors le conteur se réinitialise à cette valeur, à 0 sinon
   if (mps::readPayloadAs(message, &payload)) counter.value = payload.value;
@@ -80,6 +101,8 @@ void setup() {
   if(!MPS.begin(kGatewayMacAddress, DEVICE_NAME, kWifiChannel)) Serial.println("MPS: demarrage impossible");
 
   MPS.on(kSubCmdResetCounter, onCmdReset);
+
+  dht.begin();
 }
 
 // Exécutée en boucle (= while(true))
@@ -96,4 +119,27 @@ void loop() {
     counter.value++;
     MPS.publishValue(kSubStatusCounter, counter);
   }
+
+  static uint32_t lastDhtReadMs = 0;
+  if (millis() - lastDhtReadMs >= 1000) {
+    lastDhtReadMs = millis();
+    float temperatureReaded = dht.readTemperature();
+    float humidityReaded = dht.readHumidity();
+
+    // Vérification des mesures
+    if (!isnan(temperatureReaded) && !isnan(humidityReaded)) {
+      temperature.value = temperatureReaded;
+      humidity.value = humidityReaded;
+
+      MPS.publishValue(kSubStatusTemperature, temperature);
+      MPS.publishValue(kSubStatusHumidity, humidity);
+    }
+    else {
+      temperature.value = 999;
+      humidity.value = 999;
+      MPS.publishValue(kSubStatusTemperature, temperature);
+      MPS.publishValue(kSubStatusHumidity, humidity);
+    }
+  }
+
 }
