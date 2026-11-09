@@ -7,6 +7,7 @@ const SUB_STATUS_COUNTER = "status_" + DEVICE_NAME + "_counter"
 const SUB_CMD_RESET = "cmd_" + DEVICE_NAME + "_reset_counter"
 const SUB_STATUS_TEMPERATURE = "status_" + DEVICE_NAME + "_temperature"
 const SUB_STATUS_HUMIDITY = "status_" + DEVICE_NAME + "_humidity"
+const SUB_CMD_LED_POWER = "cmd_" + DEVICE_NAME + "_led_power"
 ## Délai sans heartbeat au-delà duquel le capteur est considéré comme bloqué (3,5 périodes de 1 s).
 const HB_TIMEOUT_S := 3.5
 ## Durée d'allumage de l'icône de heartbeat à chaque réception.
@@ -30,7 +31,20 @@ var _connected: bool = false:
 
 func _ready() -> void:
 	super() # obligatoire : c'est lui qui abonne la tuile
-	%ResetCounterButton.pressed.connect(func(): publish(SUB_CMD_RESET, PackedByteArray(), true))
+	%ResetCounterButton.pressed.connect(func(): 
+		var buffer = StreamPeerBuffer.new()
+		buffer.put_32(int(%ResetCounterLineEdit.text))
+		publish(SUB_CMD_RESET, buffer.data_array, true) )
+	%ChangeLedPowerButton.pressed.connect(func(): 
+		var buffer = StreamPeerBuffer.new()
+		buffer.put_32(int(%RedLedPowerLineEdit.text))
+		buffer.put_32(int(%GreenLedPowerLineEdit.text))
+		buffer.put_32(int(%BlueLedPowerLineEdit.text))
+		print(buffer)
+		print(%RedLedPowerLineEdit.text)
+		publish(SUB_CMD_LED_POWER, buffer.data_array, true) )
+	
+	
 
 func get_subscriptions() -> PackedStringArray:
 	var subscriptions: PackedStringArray = []
