@@ -52,6 +52,7 @@ constexpr mps::Subject kSubCmdResetCounter = mps::makeSubject("cmd_" DEVICE_NAME
 constexpr mps::Subject kSubStatusTemperature = mps::makeSubject("status_" DEVICE_NAME "_temperature");
 constexpr mps::Subject kSubStatusHumidity = mps::makeSubject("status_" DEVICE_NAME "_humidity");
 constexpr mps::Subject kSubCmdLedPower = mps::makeSubject("cmd_" DEVICE_NAME "_led_power");
+constexpr mps::Subject kSubStatusLedPower = mps::makeSubject("status_" DEVICE_NAME "_led_power");
 
 
 DHT dht(kDhtPin, DHT11);
@@ -70,7 +71,7 @@ static void onSessionOpened() {
   MPS.publishValue(kSubStatusCounter, counter);
   MPS.publishValue(kSubStatusTemperature, temperature);
   MPS.publishValue(kSubStatusHumidity, humidity);
-  MPS.publishValue(kSubCmdLedPower, ledPower);
+  MPS.publishValue(kSubStatusLedPower, ledPower);
 }
 
 static void onCmdReset(const mps::FrameView& message, void*) {
