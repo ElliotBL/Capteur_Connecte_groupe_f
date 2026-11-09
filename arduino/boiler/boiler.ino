@@ -2,41 +2,45 @@
 #include <DHT.h>
 #include "config.h"
 
+// ---- Variables constantes ----
+constexpr int octetSize = 4;
+constexpr int kDhtPin = 0; // Broche connecté au DHT11
+constexpr int kLedPin = 2; // Broche connecté au DHT11
+
 // ---- Structures de payloads ----
 
 // Structure des données
 struct __attribute__((packed)) CounterPayload {
   uint32_t count;
 };
-static_assert(sizeof(CounterPayload) == 4, "CounterPayload = 4 octets");
+static_assert(sizeof(CounterPayload) == octetSize, "CounterPayload = 4 octets");
 
 // Structure des données reçues
 struct __attribute__((packed)) ResetCounterPayload {
   uint32_t newValue;
 };
-static_assert(sizeof(ResetCounterPayload) == 4, "ResetCounterPayload = 4 octets");
+static_assert(sizeof(ResetCounterPayload) == octetSize, "ResetCounterPayload = 4 octets");
 
 struct __attribute__((packed)) TemperaturePayload {
     float degree;
 };
-static_assert(sizeof(TemperaturePayload) == 4, "TemperaturePayload = 4 octets");
+static_assert(sizeof(TemperaturePayload) == octetSize, "TemperaturePayload = 4 octets");
 
 struct __attribute__((packed)) HumidityPayload {
     float percentage;
 };
-static_assert(sizeof(HumidityPayload) == 4, "HumidityPayload = 4 octets");
+static_assert(sizeof(HumidityPayload) == octetSize, "HumidityPayload = 4 octets");
 
 struct __attribute__((packed)) LedPowerPayload {
     uint32_t red;
     uint32_t green;
     uint32_t blue;
 };
-static_assert(sizeof(LedPowerPayload) == 12, "LedPowerPayload = 12 octets");
+static_assert(sizeof(LedPowerPayload) == octetSize * 3, "LedPowerPayload = 12 octets");
 
-// ---- Variables globales ----
+// ---- Variables global ----
+
 static CounterPayload counter = {0};
-constexpr int kDhtPin = 0; // Broche connecté au DHT11
-constexpr int kLedPin = 2; // Broche connecté au DHT11
 static TemperaturePayload temperature;
 static HumidityPayload humidity;
 static LedPowerPayload ledPower;
