@@ -97,11 +97,47 @@ text = "Reset le compteur"
 [node name="TemperatureLabel" type="Label" parent="." unique_id=153472616]
 unique_name_in_owner = true
 layout_mode = 0
+offset_top = 50.0
 offset_right = 40.0
-offset_bottom = 23.0
+offset_bottom = 73.0
 
 [node name="HumidityLabel" type="Label" parent="." unique_id=1510942950]
 unique_name_in_owner = true
 layout_mode = 0
+offset_top = 70.0
 offset_right = 40.0
-offset_bottom = 23.0
+offset_bottom = 93.0
+
+[node name="ResetCounterLineEdit" type="LineEdit" parent="." unique_id=1805908193]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 68.5
+offset_bottom = 31.0
+
+[node name="RedLedPowerLineEdit" type="LineEdit" parent="." unique_id=20248962]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 200.0
+offset_right = 68.5
+offset_bottom = 231.0
+
+[node name="GreenLedPowerLineEdit" type="LineEdit" parent="." unique_id=681535130]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 250.0
+offset_right = 68.5
+offset_bottom = 281.0
+
+[node name="BlueLedPowerLineEdit" type="LineEdit" parent="." unique_id=1915385610]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 300.0
+offset_right = 68.5
+offset_bottom = 331.0
+
+[node name="ChangeLedPowerButton" type="Button" parent="." unique_id=948549800]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 350.0
+offset_right = 8.0
+offset_bottom = 358.0

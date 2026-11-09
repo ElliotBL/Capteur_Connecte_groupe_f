@@ -21,17 +21,25 @@ struct __attribute__((packed)) TemperaturePayload {
 };
 static_assert(sizeof(TemperaturePayload) == 4, "TemperaturePayload = 4 octets");
 
-
 struct __attribute__((packed)) HumidityPayload {
     float percentage;
 };
 static_assert(sizeof(HumidityPayload) == 4, "HumidityPayload = 4 octets");
 
+struct __attribute__((packed)) LedPowerPayload {
+    uint32_t red;
+    uint32_t green;
+    uint32_t blue;
+};
+static_assert(sizeof(LedPowerPayload) == 12, "LedPowerPayload = 12 octets");
+
 // ---- Variables globales ----
 static CounterPayload counter = {0};
 constexpr int kDhtPin = 0; // Broche connecté au DHT11
+constexpr int kLedPin = 2; // Broche connecté au DHT11
 static TemperaturePayload temperature;
 static HumidityPayload humidity;
+static LedPowerPayload ledPower;
 
 // ---- Subjects ----
 constexpr mps::Subject kSubHb = mps::makeSubject("hb_" DEVICE_NAME); // déjà présent
@@ -39,6 +47,7 @@ constexpr mps::Subject kSubStatusCounter = mps::makeSubject("status_" DEVICE_NAM
 constexpr mps::Subject kSubCmdResetCounter = mps::makeSubject("cmd_" DEVICE_NAME "_reset_counter");
 constexpr mps::Subject kSubStatusTemperature = mps::makeSubject("status_" DEVICE_NAME "_temperature");
 constexpr mps::Subject kSubStatusHumidity = mps::makeSubject("status_" DEVICE_NAME "_humidity");
+constexpr mps::Subject kSubCmdLedPower = mps::makeSubject("cmd_" DEVICE_NAME "_led_power");
 
 
 DHT dht(kDhtPin, DHT11);
@@ -57,16 +66,27 @@ static void onSessionOpened() {
   MPS.publishValue(kSubStatusCounter, counter);
   MPS.publishValue(kSubStatusTemperature, temperature);
   MPS.publishValue(kSubStatusHumidity, humidity);
+  MPS.publishValue(kSubCmdLedPower, ledPower);
 }
 
 static void onCmdReset(const mps::FrameView& message, void*) {
   ResetCounterPayload payload;
 
-  // Si la valeur du payload est à la longueur voulu alors le conteur se réinitialise à cette valeur, à 0 sinon
+  // Si la valeur du payload est exactement à la longueur voulu alors le conteur se réinitialise à cette valeur, à 0 sinon
   if (mps::readPayloadAs(message, &payload)) counter.count = payload.newValue;
   else counter.count = 0;
   
   MPS.publishValue(kSubStatusCounter, counter); // l'IHM voit le résultat réel
+}
+
+static void onCmdLedPower(const mps::FrameView& message, void*) {
+  LedPowerPayload payload;
+
+  // Si la valeur du payload est exactement à la longueur voulu alors la led se met à la couleur choisit sinon la led s'eteint
+  if (mps::readPayloadAs(message, &payload)) rgbLedWrite(kLedPin, payload.red, payload.green, payload.blue);
+  else rgbLedWrite(kLedPin, 0, 0, 0);
+
+  MPS.publishValue(kSubCmdLedPower, ledPower); // l'IHM voit le résultat réel
 }
 
 // ---- Fonctions appelées par setup/loop ----
@@ -103,6 +123,7 @@ void setup() {
   if(!MPS.begin(kGatewayMacAddress, DEVICE_NAME, kWifiChannel)) Serial.println("MPS: demarrage impossible");
 
   MPS.on(kSubCmdResetCounter, onCmdReset);
+  MPS.on(kSubCmdLedPower, onCmdLedPower);
 
   dht.begin();
 }
