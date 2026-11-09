@@ -1,6 +1,7 @@
 extends Tile
 
 # ---- CONSTANTES ----
+const OCTET_SIZE = 4
 const DEVICE_NAME = "sensor_f"
 const SUB_HB = "hb_" + DEVICE_NAME
 const SUB_STATUS_COUNTER = "status_" + DEVICE_NAME + "_counter"
@@ -8,6 +9,8 @@ const SUB_CMD_RESET = "cmd_" + DEVICE_NAME + "_reset_counter"
 const SUB_STATUS_TEMPERATURE = "status_" + DEVICE_NAME + "_temperature"
 const SUB_STATUS_HUMIDITY = "status_" + DEVICE_NAME + "_humidity"
 const SUB_CMD_LED_POWER = "cmd_" + DEVICE_NAME + "_led_power"
+const MAX_LED_POWER = 255
+const MASK_Color = Color(0.5, 0.5, 0.5, 0.5)
 ## Délai sans heartbeat au-delà duquel le capteur est considéré comme bloqué (3,5 périodes de 1 s).
 const HB_TIMEOUT_S := 3.5
 ## Durée d'allumage de l'icône de heartbeat à chaque réception.
@@ -43,14 +46,12 @@ func _ready() -> void:
 		publish(SUB_CMD_LED_POWER, buffer.data_array, true) )
 	%RandomLedPowerButton.pressed.connect(func(): 
 		var buffer = StreamPeerBuffer.new()
-		buffer.put_32(randi_range(0, 255))
-		buffer.put_32(randi_range(0, 255))
-		buffer.put_32(randi_range(0, 255))
+		buffer.put_32(randi_range(0, MAX_LED_POWER))
+		buffer.put_32(randi_range(0, MAX_LED_POWER))
+		buffer.put_32(randi_range(0, MAX_LED_POWER))
 		publish(SUB_CMD_LED_POWER, buffer.data_array, true) )
 		
 	
-	
-
 func get_subscriptions() -> PackedStringArray:
 	var subscriptions: PackedStringArray = []
 	
@@ -84,13 +85,13 @@ func on_message(subject_name: String, source_id: int, payload: PackedByteArray) 
 	if subject_name == SUB_HB: _on_hb(source_id)
 	if source_id != _node_id: return # ne traitez que les messages dédiés à votre capteur
 	if subject_name == SUB_STATUS_COUNTER:
-		if payload.size() != 4: return # le contrat : 4 octets, sinon on ignore
+		if payload.size() != OCTET_SIZE: return # le contrat : 4 octets, sinon on ignore
 		%CounterLabel.text = "Compteur : %d" % payload.decode_u32(0)
 	if subject_name == SUB_STATUS_TEMPERATURE:
-		if payload.size() != 4: return # le contrat : 4 octets, sinon on ignore
+		if payload.size() != OCTET_SIZE: return # le contrat : 4 octets, sinon on ignore
 		%TemperatureLabel.text = "Température : %d" % payload.decode_float(0)
 	if subject_name == SUB_STATUS_HUMIDITY:
-		if payload.size() != 4: return # le contrat : 4 octets, sinon on ignore
+		if payload.size() != OCTET_SIZE: return # le contrat : 4 octets, sinon on ignore
 		%HumidityLabel.text = "Humidité : %d" % payload.decode_float(0)
 	
 	
@@ -100,15 +101,32 @@ func _process(delta: float) -> void:
 	if _connected and _seconds_since_hb >= HB_TIMEOUT_S:
 		_connected = false  # plus de heartbeat : code du capteur bloqué ou capteur hors de portée
 
+func set_controls_enabled(node: Node, enabled: bool) -> void:
+	for child in node.get_children():
+		if child is LineEdit:
+			child.editable = enabled
+		elif child is TextEdit:
+			child.editable = enabled
+		elif child is BaseButton:
+			child.disabled = not enabled
+		elif child is Range:
+			child.editable = enabled
+		set_controls_enabled(child, enabled)
 
 func _on_sensor_connected():
 	%IDLabel.text = "node_id: %d" % _node_id
 	%ConnectedIcon.state = true
+	
+	%HBoxContainer.modulate = Color(1, 1, 1, 0)
+	set_controls_enabled(%HBoxContainer, true)
 
 
 func _on_sensor_disconnected():
 	%IDLabel.text = "node_id: ∅"
 	%ConnectedIcon.state = false
+	
+	%HBoxContainer.modulate = MASK_Color
+	set_controls_enabled(%HBoxContainer, false)
 
 ## @brief Traite un heartbeat : (re)connecte le capteur et relance la temporisation.
 ## @param source_id  Identifiant de l'appareil émetteur.

@@ -22,6 +22,7 @@ script = ExtResource("2_y03qy")
 metadata/_custom_type_script = "uid://csgbx3264kcel"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=862181495]
+unique_name_in_owner = true
 layout_mode = 0
 offset_left = 16.0
 offset_top = 11.0
@@ -69,6 +70,53 @@ _color_on = Color(0.6, 0.23921569, 0.23921569, 1)
 _color_off = Color(0.14, 0.14, 0.14, 1)
 metadata/_custom_type_script = "uid://cckwr06504sfp"
 
+[node name="CounterLabel" type="Label" parent="HBoxContainer" unique_id=610067910]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ResetCounterButton" type="Button" parent="HBoxContainer" unique_id=1863397424]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Reset le compteur"
+
+[node name="TemperatureLabel" type="Label" parent="HBoxContainer" unique_id=153472616]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HumidityLabel" type="Label" parent="HBoxContainer" unique_id=1510942950]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ResetCounterLineEdit" type="LineEdit" parent="HBoxContainer" unique_id=1805908193]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="RedLedPowerSpinBox" type="SpinBox" parent="HBoxContainer" unique_id=758932509]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 255.0
+rounded = true
+
+[node name="GreenLedPowerSpinBox" type="SpinBox" parent="HBoxContainer" unique_id=446656574]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 255.0
+rounded = true
+
+[node name="BlueLedPowerSpinBox" type="SpinBox" parent="HBoxContainer" unique_id=63423584]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 255.0
+rounded = true
+
+[node name="ChangeLedPowerButton" type="Button" parent="HBoxContainer" unique_id=948549800]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="RandomLedPowerButton" type="Button" parent="HBoxContainer" unique_id=1294868369]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="IDLabel" type="Label" parent="." unique_id=614588024]
 unique_name_in_owner = true
 layout_mode = 0
@@ -79,75 +127,3 @@ offset_bottom = 83.0
 theme_override_fonts/font = ExtResource("7_f7tlc")
 theme_override_font_sizes/font_size = 20
 text = "node_id: ∅"
-
-[node name="CounterLabel" type="Label" parent="." unique_id=610067910]
-unique_name_in_owner = true
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-
-[node name="ResetCounterButton" type="Button" parent="." unique_id=1863397424]
-unique_name_in_owner = true
-layout_mode = 0
-offset_top = 100.0
-offset_right = 149.0
-offset_bottom = 131.0
-text = "Reset le compteur"
-
-[node name="TemperatureLabel" type="Label" parent="." unique_id=153472616]
-unique_name_in_owner = true
-layout_mode = 0
-offset_top = 50.0
-offset_right = 40.0
-offset_bottom = 73.0
-
-[node name="HumidityLabel" type="Label" parent="." unique_id=1510942950]
-unique_name_in_owner = true
-layout_mode = 0
-offset_top = 70.0
-offset_right = 40.0
-offset_bottom = 93.0
-
-[node name="ResetCounterLineEdit" type="LineEdit" parent="." unique_id=1805908193]
-unique_name_in_owner = true
-layout_mode = 0
-offset_right = 68.5
-offset_bottom = 31.0
-
-[node name="RedLedPowerSpinBox" type="SpinBox" parent="." unique_id=758932509]
-unique_name_in_owner = true
-layout_mode = 0
-offset_right = 86.5
-offset_bottom = 31.0
-max_value = 255.0
-rounded = true
-
-[node name="GreenLedPowerSpinBox" type="SpinBox" parent="." unique_id=446656574]
-unique_name_in_owner = true
-layout_mode = 0
-offset_right = 86.5
-offset_bottom = 31.0
-max_value = 255.0
-rounded = true
-
-[node name="BlueLedPowerSpinBox" type="SpinBox" parent="." unique_id=63423584]
-unique_name_in_owner = true
-layout_mode = 0
-offset_right = 86.5
-offset_bottom = 31.0
-max_value = 255.0
-rounded = true
-
-[node name="ChangeLedPowerButton" type="Button" parent="." unique_id=948549800]
-unique_name_in_owner = true
-layout_mode = 0
-offset_top = 350.0
-offset_right = 8.0
-offset_bottom = 358.0
-
-[node name="RandomLedPowerButton" type="Button" parent="." unique_id=1294868369]
-unique_name_in_owner = true
-layout_mode = 0
-offset_top = 350.0
-offset_right = 8.0
-offset_bottom = 358.0
