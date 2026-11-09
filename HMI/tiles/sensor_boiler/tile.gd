@@ -9,6 +9,7 @@ const SUB_CMD_RESET = "cmd_" + DEVICE_NAME + "_reset_counter"
 const SUB_STATUS_TEMPERATURE = "status_" + DEVICE_NAME + "_temperature"
 const SUB_STATUS_HUMIDITY = "status_" + DEVICE_NAME + "_humidity"
 const SUB_CMD_LED_POWER = "cmd_" + DEVICE_NAME + "_led_power"
+const SUB_STATUS_LED_POWER = "status_" + DEVICE_NAME + "_led_power"
 const MAX_LED_POWER = 255
 const MASK_Color = Color(0.5, 0.5, 0.5, 0.5)
 ## Délai sans heartbeat au-delà duquel le capteur est considéré comme bloqué (3,5 périodes de 1 s).
@@ -60,6 +61,7 @@ func get_subscriptions() -> PackedStringArray:
 	subscriptions.append(SUB_STATUS_COUNTER)
 	subscriptions.append(SUB_STATUS_TEMPERATURE)
 	subscriptions.append(SUB_STATUS_HUMIDITY)
+	subscriptions.append(SUB_STATUS_LED_POWER)
 	return subscriptions
 
 
@@ -93,7 +95,15 @@ func on_message(subject_name: String, source_id: int, payload: PackedByteArray) 
 	if subject_name == SUB_STATUS_HUMIDITY:
 		if payload.size() != OCTET_SIZE: return # le contrat : 4 octets, sinon on ignore
 		%HumidityLabel.text = "Humidité : %d" % payload.decode_float(0)
-	
+	if subject_name == SUB_STATUS_LED_POWER:
+		if payload.size() != OCTET_SIZE * 3: return
+		var red = payload.decode_u32(0)
+		var green = payload.decode_u32(OCTET_SIZE)
+		var blue = payload.decode_u32(OCTET_SIZE * 2)
+		%RedLedPowerSpinBox.value = red
+		%GreenLedPowerSpinBox.value = green
+		%BlueLedPowerSpinBox.value = blue
+
 	
 func _process(delta: float) -> void:
 	_seconds_since_hb += delta
