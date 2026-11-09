@@ -37,12 +37,17 @@ func _ready() -> void:
 		publish(SUB_CMD_RESET, buffer.data_array, true) )
 	%ChangeLedPowerButton.pressed.connect(func(): 
 		var buffer = StreamPeerBuffer.new()
-		buffer.put_32(int(%RedLedPowerLineEdit.text))
-		buffer.put_32(int(%GreenLedPowerLineEdit.text))
-		buffer.put_32(int(%BlueLedPowerLineEdit.text))
-		print(buffer)
-		print(%RedLedPowerLineEdit.text)
+		buffer.put_32(int(%RedLedPowerSpinBox.text))
+		buffer.put_32(int(%GreenLedPowerSpinBox.text))
+		buffer.put_32(int(%BlueLedPowerSpinBox.text))
 		publish(SUB_CMD_LED_POWER, buffer.data_array, true) )
+	%RandomLedPowerButton.pressed.connect(func(): 
+		var buffer = StreamPeerBuffer.new()
+		buffer.put_32(randi_range(0, 255))
+		buffer.put_32(randi_range(0, 255))
+		buffer.put_32(randi_range(0, 255))
+		publish(SUB_CMD_LED_POWER, buffer.data_array, true) )
+		
 	
 	
 
