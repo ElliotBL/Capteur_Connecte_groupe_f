@@ -1,2 +1,0 @@
-StyleBoxFlat
-Theme
