@@ -78,8 +78,15 @@ static void onCmdReset(const mps::FrameView& message, void*) {
   ResetCounterPayload payload;
 
   // Si la valeur du payload est exactement à la longueur voulu alors le conteur se réinitialise à cette valeur, à 0 sinon
-  if (mps::readPayloadAs(message, &payload)) counter.count = payload.newValue;
-  else counter.count = 0;
+  static void onCmdReset(const mps::FrameView& message, void*) {
+  ResetCounterPayload payload;
+
+  if (!mps::readPayloadAs(message, &payload)) {
+    Serial.println("Commande reset invalide");
+    return;
+  }
+
+  counter.count = payload.newValue;
   
   MPS.publishValue(kSubStatusCounter, counter); // l'IHM voit le résultat réel
 }
@@ -88,8 +95,19 @@ static void onCmdLedPower(const mps::FrameView& message, void*) {
   LedPowerPayload payload;
 
   // Si la valeur du payload est exactement à la longueur voulu alors la led se met à la couleur choisit sinon la led s'eteint
-  if (mps::readPayloadAs(message, &payload)) rgbLedWrite(kLedPin, payload.red, payload.green, payload.blue);
-  else rgbLedWrite(kLedPin, 0, 0, 0);
+  if (!mps::readPayloadAs(message, &payload)) {
+    Serial.println("Commande LED invalide");
+    return;
+  }
+
+  if (payload.red > 255 || payload.green > 255 || payload.blue > 255) {
+    Serial.println("Couleur LED invalide");
+    return;
+  }
+
+  ledPower = payload;
+
+  rgbLedWrite(kLedPin, ledPower.red, ledPower.green, ledPower.blue);
 
   MPS.publishValue(kSubCmdLedPower, ledPower); // l'IHM voit le résultat réel
 }
