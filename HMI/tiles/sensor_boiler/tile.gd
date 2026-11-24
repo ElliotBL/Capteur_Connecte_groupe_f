@@ -20,6 +20,7 @@ const HB_BLINK_S := 0.5
 # ---- VARIABLES ----
 var _node_id: int = -1
 var _seconds_since_hb := INF
+var _led_is_on: bool = false
 # Variable "_connected" avec setter personnalisé pour appeler la MAJ de l'UI au changement d'état
 var _connected: bool = false:
 	set(value):
@@ -39,18 +40,20 @@ func _ready() -> void:
 		var buffer = StreamPeerBuffer.new()
 		buffer.put_32(int(%ResetCounterLineEdit.text))
 		publish(SUB_CMD_RESET, buffer.data_array, true) )
-	%ChangeLedPowerButton.pressed.connect(func(): 
-		var buffer = StreamPeerBuffer.new()
-		buffer.put_32(int(%RedLedPowerSpinBox.text))
-		buffer.put_32(int(%GreenLedPowerSpinBox.text))
-		buffer.put_32(int(%BlueLedPowerSpinBox.text))
-		publish(SUB_CMD_LED_POWER, buffer.data_array, true) )
 	%RandomLedPowerButton.pressed.connect(func(): 
 		var buffer = StreamPeerBuffer.new()
 		buffer.put_32(randi_range(0, MAX_LED_POWER))
 		buffer.put_32(randi_range(0, MAX_LED_POWER))
 		buffer.put_32(randi_range(0, MAX_LED_POWER))
-		publish(SUB_CMD_LED_POWER, buffer.data_array, true) )
+		publish(SUB_CMD_LED_POWER, buffer.data_array, true)
+		_led_is_on = true )
+	%TurnOffLedPowerButton.pressed.connect(func(): 
+		var buffer = StreamPeerBuffer.new()
+		buffer.put_32(int(%RedLedPowerSpinBox.value) if !_led_is_on else 0)
+		buffer.put_32(int(%GreenLedPowerSpinBox.value) if !_led_is_on else 0)
+		buffer.put_32(int(%BlueLedPowerSpinBox.value) if !_led_is_on else 0)
+		publish(SUB_CMD_LED_POWER, buffer.data_array, true)
+		_led_is_on = !_led_is_on )
 		
 	
 func get_subscriptions() -> PackedStringArray:
@@ -127,7 +130,7 @@ func _on_sensor_connected():
 	%IDLabel.text = "node_id: %d" % _node_id
 	%ConnectedIcon.state = true
 	
-	%HBoxContainer.modulate = Color(1, 1, 1, 0)
+	%HBoxContainer.modulate = Color(1, 1, 1, 1)
 	set_controls_enabled(%HBoxContainer, true)
 
 
