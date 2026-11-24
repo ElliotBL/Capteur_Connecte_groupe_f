@@ -70,52 +70,91 @@ _color_on = Color(0.6, 0.23921569, 0.23921569, 1)
 _color_off = Color(0.14, 0.14, 0.14, 1)
 metadata/_custom_type_script = "uid://cckwr06504sfp"
 
-[node name="CounterLabel" type="Label" parent="HBoxContainer" unique_id=610067910]
+[node name="CounterLabel" type="Label" parent="." unique_id=610067910]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 0
+offset_left = 8.0
+offset_top = 104.0
+offset_right = 32.0
+offset_bottom = 127.0
 
-[node name="ResetCounterButton" type="Button" parent="HBoxContainer" unique_id=1863397424]
+[node name="ResetCounterButton" type="Button" parent="." unique_id=1863397424]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 0
+offset_left = 48.0
+offset_top = 88.0
+offset_right = 197.0
+offset_bottom = 136.0
 text = "Reset le compteur"
 
-[node name="TemperatureLabel" type="Label" parent="HBoxContainer" unique_id=153472616]
+[node name="TemperatureLabel" type="Label" parent="." unique_id=153472616]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 0
+offset_left = 8.0
+offset_top = 144.0
+offset_right = 34.0
+offset_bottom = 167.0
 
-[node name="HumidityLabel" type="Label" parent="HBoxContainer" unique_id=1510942950]
+[node name="HumidityLabel" type="Label" parent="." unique_id=1510942950]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 0
+offset_left = 8.0
+offset_top = 176.0
+offset_right = 35.0
+offset_bottom = 199.0
 
-[node name="ResetCounterLineEdit" type="LineEdit" parent="HBoxContainer" unique_id=1805908193]
+[node name="ResetCounterLineEdit" type="LineEdit" parent="." unique_id=1805908193]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 0
+offset_left = 224.0
+offset_top = 144.0
+offset_right = 293.0
+offset_bottom = 192.0
 
-[node name="RedLedPowerSpinBox" type="SpinBox" parent="HBoxContainer" unique_id=758932509]
+[node name="RedLedPowerSpinBox" type="SpinBox" parent="." unique_id=758932509]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 0
+offset_top = 240.0
+offset_right = 87.0
+offset_bottom = 288.0
 max_value = 255.0
 rounded = true
 
-[node name="GreenLedPowerSpinBox" type="SpinBox" parent="HBoxContainer" unique_id=446656574]
+[node name="GreenLedPowerSpinBox" type="SpinBox" parent="." unique_id=446656574]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 0
+offset_left = 104.0
+offset_top = 240.0
+offset_right = 191.0
+offset_bottom = 288.0
 max_value = 255.0
 rounded = true
 
-[node name="BlueLedPowerSpinBox" type="SpinBox" parent="HBoxContainer" unique_id=63423584]
+[node name="BlueLedPowerSpinBox" type="SpinBox" parent="." unique_id=63423584]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 0
+offset_left = 208.0
+offset_top = 240.0
+offset_right = 295.0
+offset_bottom = 288.0
 max_value = 255.0
 rounded = true
 
-[node name="ChangeLedPowerButton" type="Button" parent="HBoxContainer" unique_id=948549800]
+[node name="TurnOffLedPowerButton" type="Button" parent="." unique_id=1187531115]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 0
+offset_left = 96.0
+offset_top = 312.0
+offset_right = 157.0
+offset_bottom = 360.0
 
-[node name="RandomLedPowerButton" type="Button" parent="HBoxContainer" unique_id=1294868369]
+[node name="RandomLedPowerButton" type="Button" parent="." unique_id=1294868369]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 0
+offset_left = 184.0
+offset_top = 312.0
+offset_right = 253.0
+offset_bottom = 360.0
 
 [node name="IDLabel" type="Label" parent="." unique_id=614588024]
 unique_name_in_owner = true
