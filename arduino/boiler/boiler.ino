@@ -98,8 +98,8 @@ static void onCmdLedPower(const mps::FrameView& message, void*) {
 // envoi de heartbeats réguliers sans bloquer (comparaison au temps écoulé sans delay())
 void publishHeartbeat(){
   static uint32_t lastHeartbeatTimeMs = 0;
-  static const uint16_t kHbPeriod = 1000;
-  if(millis() - lastHeartbeatTimeMs >= kHbPeriod) {
+  static const uint16_t kHbPeriodMs = 1000;
+  if(millis() - lastHeartbeatTimeMs >= kHbPeriodMs) {
     lastHeartbeatTimeMs = millis();
     
     // L'envoi de heartbeats depuis loop() assure au récepteur (IHM) que le code "métier" n'est pas planté
@@ -151,13 +151,13 @@ void loop() {
   static uint32_t lastDhtReadMs = 0;
   if (millis() - lastDhtReadMs >= 1000) {
     lastDhtReadMs = millis();
-    float temperatureReaded = dht.readTemperature();
-    float humidityReaded = dht.readHumidity();
+    float temperatureReadedDegrees = dht.readTemperature();
+    float humidityReadedPercentage = dht.readHumidity();
 
     // Vérification des mesures
-    if (!isnan(temperatureReaded) && !isnan(humidityReaded)) {
-      temperature.degree = temperatureReaded;
-      humidity.percentage = humidityReaded;
+    if (!isnan(temperatureReadedDegrees) && !isnan(humidityReadedPercentage)) {
+      temperature.degree = temperatureReadedDegrees;
+      humidity.percentage = humidityReadedPercentage;
 
       MPS.publishValue(kSubStatusTemperature, temperature);
       MPS.publishValue(kSubStatusHumidity, humidity);

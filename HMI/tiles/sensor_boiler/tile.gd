@@ -93,11 +93,11 @@ func on_message(subject_name: String, source_id: int, payload: PackedByteArray) 
 		if payload.size() != OCTET_SIZE: return # le contrat : 4 octets, sinon on ignore
 		%CounterLabel.text = "Compteur : %d" % payload.decode_u32(0)
 	if subject_name == SUB_STATUS_TEMPERATURE:
-		if payload.size() != OCTET_SIZE: return # le contrat : 4 octets, sinon on ignore
-		%TemperatureLabel.text = "Température : %d" % payload.decode_float(0)
+		if payload.size() != OCTET_SIZE: return
+		%TemperatureLabel.text = "Température : %.1f °C" % payload.decode_float(0)
 	if subject_name == SUB_STATUS_HUMIDITY:
-		if payload.size() != OCTET_SIZE: return # le contrat : 4 octets, sinon on ignore
-		%HumidityLabel.text = "Humidité : %d" % payload.decode_float(0)
+		if payload.size() != OCTET_SIZE: return
+		%HumidityLabel.text = "Humidité : %.1f %%" % payload.decode_float(0)
 	if subject_name == SUB_STATUS_LED_POWER:
 		if payload.size() != OCTET_SIZE * 3: return
 		var red = payload.decode_u32(0)

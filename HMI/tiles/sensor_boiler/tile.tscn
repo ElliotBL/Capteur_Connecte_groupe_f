@@ -81,9 +81,9 @@ offset_bottom = 127.0
 [node name="ResetCounterButton" type="Button" parent="." unique_id=1863397424]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 48.0
+offset_left = 136.0
 offset_top = 88.0
-offset_right = 197.0
+offset_right = 285.0
 offset_bottom = 136.0
 text = "Reset le compteur"
 
