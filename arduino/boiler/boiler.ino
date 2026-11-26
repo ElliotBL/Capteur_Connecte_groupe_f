@@ -4,18 +4,15 @@
 
 // ---- Variables constantes ----
 constexpr int octetSize = 4;
-constexpr int kDhtPin = 0; // Broche connecté au DHT11
-constexpr int kLedPin = 2; // Broche connecté au DHT11
+constexpr int kDhtPin = 0;
+constexpr int kLedPin = 2; 
 
 // ---- Structures de payloads ----
-
-// Structure des données
 struct __attribute__((packed)) CounterPayload {
   uint32_t count;
 };
 static_assert(sizeof(CounterPayload) == octetSize, "CounterPayload = 4 octets");
 
-// Structure des données reçues
 struct __attribute__((packed)) ResetCounterPayload {
   uint32_t newValue;
 };
@@ -39,14 +36,13 @@ struct __attribute__((packed)) LedPowerPayload {
 static_assert(sizeof(LedPowerPayload) == octetSize * 3, "LedPowerPayload = 12 octets");
 
 // ---- Variables global ----
-
 static CounterPayload counter = {0};
 static TemperaturePayload temperature;
 static HumidityPayload humidity;
 static LedPowerPayload ledPower;
 
 // ---- Subjects ----
-constexpr mps::Subject kSubHb = mps::makeSubject("hb_" DEVICE_NAME); // déjà présent
+constexpr mps::Subject kSubHb = mps::makeSubject("hb_" DEVICE_NAME); 
 constexpr mps::Subject kSubStatusCounter = mps::makeSubject("status_" DEVICE_NAME "_counter");
 constexpr mps::Subject kSubCmdResetCounter = mps::makeSubject("cmd_" DEVICE_NAME "_reset_counter");
 constexpr mps::Subject kSubStatusTemperature = mps::makeSubject("status_" DEVICE_NAME "_temperature");
@@ -58,27 +54,22 @@ constexpr mps::Subject kSubStatusLedPower = mps::makeSubject("status_" DEVICE_NA
 DHT dht(kDhtPin, DHT11);
 
 // ---- Callbacks ----
-
-// Appelé en cas d'échec d'envoi (callback)
+// Signale les échecs de transmission afin de faciliter le diagnostic des problèmes de communication.
 static void onSendFailed(uint16_t sequenceNumber, uint32_t subjectId, mps::SendFailureReason, mps::AcknowledgementStatus) {
   Serial.printf("/!\\ envoi %u (subject 0x%08lX) perdu\n", sequenceNumber, (unsigned long)subjectId);
 }
 
-// Appelé lors de l'ouverture de la session (callback)
+// Publie les dernières valeurs connues des capteurs et des périphériques lors de l'ouverture d'une session MPS.
 static void onSessionOpened() {
   Serial.println("Session opened!");
-  // republiez ici l’état initial, la passerelle ne garde rien
   MPS.publishValue(kSubStatusCounter, counter);
   MPS.publishValue(kSubStatusTemperature, temperature);
   MPS.publishValue(kSubStatusHumidity, humidity);
   MPS.publishValue(kSubStatusLedPower, ledPower);
 }
 
+// Traite les commandes de réinitialisation du compteur reçues depuis l'interface de supervision.
 static void onCmdReset(const mps::FrameView& message, void*) {
-  ResetCounterPayload payload;
-
-  // Si la valeur du payload est exactement à la longueur voulu alors le conteur se réinitialise à cette valeur, à 0 sinon
-  static void onCmdReset(const mps::FrameView& message, void*) {
   ResetCounterPayload payload;
 
   if (!mps::readPayloadAs(message, &payload)) {
@@ -88,13 +79,13 @@ static void onCmdReset(const mps::FrameView& message, void*) {
 
   counter.count = payload.newValue;
   
-  MPS.publishValue(kSubStatusCounter, counter); // l'IHM voit le résultat réel
+  MPS.publishValue(kSubStatusCounter, counter);
 }
 
+// Traite les commandes de contrôle RGB en vérifiant les valeurs reçues avant de modifier la couleur de la LED.
 static void onCmdLedPower(const mps::FrameView& message, void*) {
   LedPowerPayload payload;
 
-  // Si la valeur du payload est exactement à la longueur voulu alors la led se met à la couleur choisit sinon la led s'eteint
   if (!mps::readPayloadAs(message, &payload)) {
     Serial.println("Commande LED invalide");
     return;
@@ -109,40 +100,36 @@ static void onCmdLedPower(const mps::FrameView& message, void*) {
 
   rgbLedWrite(kLedPin, ledPower.red, ledPower.green, ledPower.blue);
 
-  MPS.publishValue(kSubCmdLedPower, ledPower); // l'IHM voit le résultat réel
+  MPS.publishValue(kSubCmdLedPower, ledPower); 
 }
 
 // ---- Fonctions appelées par setup/loop ----
-// envoi de heartbeats réguliers sans bloquer (comparaison au temps écoulé sans delay())
+// Maintient la communication avec l'interface de supervision en publiant périodiquement un signal de présence.
 void publishHeartbeat(){
   static uint32_t lastHeartbeatTimeMs = 0;
   static const uint16_t kHbPeriodMs = 1000;
   if(millis() - lastHeartbeatTimeMs >= kHbPeriodMs) {
     lastHeartbeatTimeMs = millis();
     
-    // L'envoi de heartbeats depuis loop() assure au récepteur (IHM) que le code "métier" n'est pas planté
     MPS.publishHeartbeat(kSubHb);
   }
 }
 
 // ---- Fonctions Arduino ----
-// Exécutée une fois au démarrage
+// Initialise la communication MPS, configure les callbacks et prépare les périphériques utilisés par le programme.
 void setup() {
-  Serial.begin(115200); // Démarrage de la communication série à 115200 bauds (sortie des Serial.print.. par exemple)
-  MPS.setLogOutput(&Serial); // Définition de la sortie des messages de log de la lib MPS
+  Serial.begin(115200);
+  MPS.setLogOutput(&Serial);
 
-  // enregistrement des callbacks
   MPS.setRegisteredCallback(onSessionOpened);
   MPS.setSendFailedCallback(onSendFailed);
 
-  // constante d'adresse vide pour vérifier que l'adresse a été définie dans config.h
   static const uint8_t kUnsetMacAddress[6] = {0, 0, 0, 0, 0, 0};
   if(memcmp(kGatewayMacAddress, kUnsetMacAddress, 6) == 0) {
     Serial.println("MPS: renseignez kGatewayMacAddress dans config.h (adresse affichee par l'IHM)");
     return;
   }
 
-  // démarrage du client MPS
   if(!MPS.begin(kGatewayMacAddress, DEVICE_NAME, kWifiChannel)) Serial.println("MPS: demarrage impossible");
 
   MPS.on(kSubCmdResetCounter, onCmdReset);
@@ -151,12 +138,10 @@ void setup() {
   dht.begin();
 }
 
-// Exécutée en boucle (= while(true))
+// Exécute les traitements périodiques du programme : communication MPS, comptage et acquisition des données environnementales.
 void loop() {
-  // appel de la boucle MPS (/!\ du code bloquant dans votre boucle loop() pourrait occasionner des problèmes de connexion)
   MPS.loop();
 
-  // Appel non bloquant de l'envoi d'HB (polling)
   publishHeartbeat();
 
   static uint32_t lastCounterTimeMs = 0;
@@ -172,7 +157,6 @@ void loop() {
     float temperatureReadedDegrees = dht.readTemperature();
     float humidityReadedPercentage = dht.readHumidity();
 
-    // Vérification des mesures
     if (!isnan(temperatureReadedDegrees) && !isnan(humidityReadedPercentage)) {
       temperature.degree = temperatureReadedDegrees;
       humidity.percentage = humidityReadedPercentage;

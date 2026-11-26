@@ -105,6 +105,7 @@ offset_bottom = 199.0
 
 [node name="ResetCounterLineEdit" type="LineEdit" parent="." unique_id=1805908193]
 unique_name_in_owner = true
+visible = false
 layout_mode = 0
 offset_left = 224.0
 offset_top = 144.0
@@ -122,6 +123,7 @@ rounded = true
 
 [node name="GreenLedPowerSpinBox" type="SpinBox" parent="." unique_id=446656574]
 unique_name_in_owner = true
+visible = false
 layout_mode = 0
 offset_left = 104.0
 offset_top = 240.0
