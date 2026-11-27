@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://cwge38rkb8axb"]
 
-[ext_resource type="StyleBox" uid="uid://t0n8yj0takmp" path="res://style/sbf_tile.tres" id="1_lf8ud"]
 [ext_resource type="Script" uid="uid://yggjqj7t73j1" path="res://tiles/sensor_boiler/tile.gd" id="2_y03qy"]
 [ext_resource type="Texture2D" uid="uid://c0rtnopcyn7ns" path="res://tiles/sensor_boiler/heart(2).png" id="3_conwk"]
 [ext_resource type="Texture2D" uid="uid://cngcot67qdg6b" path="res://tiles/sensor_boiler/wifi.png" id="4_bq384"]
@@ -8,163 +7,609 @@
 [ext_resource type="Script" uid="uid://cckwr06504sfp" path="res://core/state_icon.gd" id="5_mn2ah"]
 [ext_resource type="FontFile" uid="uid://cgmdfv1y5xbjs" path="res://tiles/sensor_boiler/SpaceMono-Regular.ttf" id="7_f7tlc"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lbf3d"]
-content_margin_bottom = 1.0
+[sub_resource type="StyleBoxFlat" id="sb_tile"]
+bg_color = Color(0.168, 0.176, 0.196, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.24, 0.25, 0.28, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+corner_detail = 6
+shadow_color = Color(0, 0, 0, 0.3)
+shadow_size = 10
+shadow_offset = Vector2(0, 3)
+
+[sub_resource type="StyleBoxFlat" id="sb_btn_normal"]
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+bg_color = Color(0.235, 0.247, 0.278, 1)
+border_width_bottom = 2
+border_color = Color(0.165, 0.173, 0.196, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_btn_hover"]
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+bg_color = Color(0.29, 0.306, 0.345, 1)
+border_width_bottom = 2
+border_color = Color(0.165, 0.173, 0.196, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_btn_pressed"]
+content_margin_left = 10.0
+content_margin_top = 5.0
+content_margin_right = 10.0
+content_margin_bottom = 3.0
+bg_color = Color(0.2, 0.416, 0.733, 1)
+border_width_top = 2
+border_color = Color(0.141, 0.298, 0.533, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_btn_disabled"]
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+bg_color = Color(0.2, 0.208, 0.231, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+corner_detail = 5
+
+[sub_resource type="StyleBoxEmpty" id="sb_empty"]
+
+[sub_resource type="StyleBoxFlat" id="sb_field"]
+content_margin_left = 6.0
+content_margin_top = 2.0
+content_margin_right = 4.0
+content_margin_bottom = 2.0
+bg_color = Color(0.118, 0.125, 0.141, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.255, 0.267, 0.298, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_field_focus"]
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.553, 1, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+corner_detail = 5
+
+[sub_resource type="Theme" id="theme_tile"]
+default_font = ExtResource("7_f7tlc")
+default_font_size = 13
+Button/colors/font_color = Color(0.925, 0.933, 0.949, 1)
+Button/colors/font_disabled_color = Color(0.46, 0.475, 0.51, 1)
+Button/colors/font_hover_color = Color(1, 1, 1, 1)
+Button/colors/font_pressed_color = Color(1, 1, 1, 1)
+Button/colors/font_focus_color = Color(0.925, 0.933, 0.949, 1)
+Button/fonts/font = ExtResource("5_bq384")
+Button/font_sizes/font_size = 12
+Button/styles/disabled = SubResource("sb_btn_disabled")
+Button/styles/focus = SubResource("sb_empty")
+Button/styles/hover = SubResource("sb_btn_hover")
+Button/styles/hover_pressed = SubResource("sb_btn_pressed")
+Button/styles/normal = SubResource("sb_btn_normal")
+Button/styles/pressed = SubResource("sb_btn_pressed")
+Label/colors/font_color = Color(0.925, 0.933, 0.949, 1)
+LineEdit/colors/font_color = Color(0.925, 0.933, 0.949, 1)
+LineEdit/colors/font_uneditable_color = Color(0.55, 0.565, 0.6, 1)
+LineEdit/fonts/font = ExtResource("5_bq384")
+LineEdit/font_sizes/font_size = 15
+LineEdit/styles/focus = SubResource("sb_field_focus")
+LineEdit/styles/normal = SubResource("sb_field")
+LineEdit/styles/read_only = SubResource("sb_field")
+
+[sub_resource type="StyleBoxFlat" id="sb_chip"]
+content_margin_left = 10.0
+content_margin_top = 6.0
+content_margin_right = 10.0
+content_margin_bottom = 6.0
+bg_color = Color(0.118, 0.125, 0.141, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+corner_detail = 6
+
+[sub_resource type="StyleBoxFlat" id="sb_card_temp"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+bg_color = Color(0.133, 0.141, 0.157, 1)
+border_width_left = 3
+border_color = Color(1, 0.541, 0.298, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_card_hum"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+bg_color = Color(0.133, 0.141, 0.157, 1)
+border_width_left = 3
+border_color = Color(0.298, 0.698, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_card_counter"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0.133, 0.141, 0.157, 1)
+border_width_left = 3
+border_color = Color(0.706, 0.549, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="sb_card_led"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0.133, 0.141, 0.157, 1)
+border_width_left = 3
+border_color = Color(0.92, 0.92, 0.92, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+corner_detail = 5
+
+[sub_resource type="StyleBoxEmpty" id="sb_unit"]
+content_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxFlat" id="sb_mask"]
+bg_color = Color(0.09, 0.094, 0.106, 0.82)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+corner_detail = 6
 
 [node name="TileSensorDemo" type="Panel" unique_id=304170558]
 custom_minimum_size = Vector2(336, 336)
 custom_maximum_size = Vector2(336, 336)
-offset_right = 360.0
-offset_bottom = 240.0
+offset_right = 336.0
+offset_bottom = 336.0
 mouse_filter = 2
-theme_override_styles/panel = ExtResource("1_lf8ud")
+theme = SubResource("theme_tile")
+theme_override_styles/panel = SubResource("sb_tile")
 script = ExtResource("2_y03qy")
 metadata/_custom_type_script = "uid://csgbx3264kcel"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=862181495]
+[node name="Margin" type="MarginContainer" parent="." unique_id=1720045311]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 14
+
+[node name="Layout" type="VBoxContainer" parent="Margin" unique_id=1584392017]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="HBoxContainer" parent="Margin/Layout" unique_id=862181495]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 16.0
-offset_top = 11.0
-offset_right = 320.0
-offset_bottom = 59.0
+layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 8
 
-[node name="Label" type="Label" parent="HBoxContainer" unique_id=1467322133]
+[node name="TitleBox" type="VBoxContainer" parent="Margin/Layout/Header" unique_id=1093825561]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 1
+mouse_filter = 2
+theme_override_constants/separation = -2
+
+[node name="Label" type="Label" parent="Margin/Layout/Header/TitleBox" unique_id=1467322133]
+layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("5_bq384")
-theme_override_font_sizes/font_size = 28
-theme_override_styles/normal = SubResource("StyleBoxEmpty_lbf3d")
+theme_override_font_sizes/font_size = 21
 text = "SENSOR BOILER"
-vertical_alignment = 1
-visible_characters_behavior = 1
 
-[node name="ConnectedIcon" type="TextureRect" parent="HBoxContainer" unique_id=31549510]
+[node name="SubtitleBox" type="HBoxContainer" parent="Margin/Layout/Header/TitleBox" unique_id=1309847721]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="StatusLabel" type="Label" parent="Margin/Layout/Header/TitleBox/SubtitleBox" unique_id=2001398450]
 unique_name_in_owner = true
-modulate = Color(0.23921569, 0.6, 0.28627452, 1)
-custom_maximum_size = Vector2(28, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.565, 0.6, 1)
+theme_override_fonts/font = ExtResource("5_bq384")
+theme_override_font_sizes/font_size = 11
+text = "● HORS LIGNE"
+
+[node name="IDLabel" type="Label" parent="Margin/Layout/Header/TitleBox/SubtitleBox" unique_id=614588024]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.565, 0.6, 1)
+theme_override_font_sizes/font_size = 11
+text = "node_id: ∅"
+
+[node name="StatusChip" type="PanelContainer" parent="Margin/Layout/Header" unique_id=1946270153]
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_styles/panel = SubResource("sb_chip")
+
+[node name="Icons" type="HBoxContainer" parent="Margin/Layout/Header/StatusChip" unique_id=356017742]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="ConnectedIcon" type="TextureRect" parent="Margin/Layout/Header/StatusChip/Icons" unique_id=31549510]
+unique_name_in_owner = true
+modulate = Color(0.29, 0.31, 0.345, 1)
+custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 size_flags_vertical = 4
 mouse_filter = 2
 texture = ExtResource("4_bq384")
+expand_mode = 1
+stretch_mode = 5
 script = ExtResource("5_mn2ah")
 state = false
-_color_on = Color(0.23921569, 0.6, 0.28627452, 1)
-_color_off = Color(0.14, 0.14, 0.14, 1)
+_color_on = Color(0.239, 0.863, 0.518, 1)
+_color_off = Color(0.29, 0.31, 0.345, 1)
 metadata/_custom_type_script = "uid://cckwr06504sfp"
 
-[node name="HeartbeatIcon" type="TextureRect" parent="HBoxContainer" unique_id=224637191]
+[node name="HeartbeatIcon" type="TextureRect" parent="Margin/Layout/Header/StatusChip/Icons" unique_id=224637191]
 unique_name_in_owner = true
-custom_maximum_size = Vector2(24, 24)
+modulate = Color(0.29, 0.31, 0.345, 1)
+custom_minimum_size = Vector2(18, 18)
 layout_mode = 2
 size_flags_vertical = 4
 mouse_filter = 2
 texture = ExtResource("3_conwk")
+expand_mode = 1
+stretch_mode = 5
 script = ExtResource("5_mn2ah")
 state = false
-_color_on = Color(0.6, 0.23921569, 0.23921569, 1)
-_color_off = Color(0.14, 0.14, 0.14, 1)
+_modulate_time = 0.15
+_color_on = Color(1, 0.302, 0.416, 1)
+_color_off = Color(0.29, 0.31, 0.345, 1)
 metadata/_custom_type_script = "uid://cckwr06504sfp"
 
-[node name="CounterLabel" type="Label" parent="." unique_id=610067910]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 8.0
-offset_top = 104.0
-offset_right = 32.0
-offset_bottom = 127.0
+[node name="BodyStack" type="MarginContainer" parent="Margin/Layout" unique_id=1186639120]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
 
-[node name="ResetCounterButton" type="Button" parent="." unique_id=1863397424]
+[node name="Body" type="VBoxContainer" parent="Margin/Layout/BodyStack" unique_id=1402284571]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 136.0
-offset_top = 88.0
-offset_right = 285.0
-offset_bottom = 136.0
-text = "Reset le compteur"
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
 
-[node name="TemperatureLabel" type="Label" parent="." unique_id=153472616]
+[node name="Metrics" type="HBoxContainer" parent="Margin/Layout/BodyStack/Body" unique_id=1688371020]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="TemperatureCard" type="PanelContainer" parent="Margin/Layout/BodyStack/Body/Metrics" unique_id=1272810394]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_styles/panel = SubResource("sb_card_temp")
+
+[node name="VBox" type="VBoxContainer" parent="Margin/Layout/BodyStack/Body/Metrics/TemperatureCard" unique_id=871262307]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="Caption" type="Label" parent="Margin/Layout/BodyStack/Body/Metrics/TemperatureCard/VBox" unique_id=1990340115]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.565, 0.6, 1)
+theme_override_font_sizes/font_size = 10
+text = "TEMPÉRATURE"
+
+[node name="Value" type="HBoxContainer" parent="Margin/Layout/BodyStack/Body/Metrics/TemperatureCard/VBox" unique_id=1554096213]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="TemperatureLabel" type="Label" parent="Margin/Layout/BodyStack/Body/Metrics/TemperatureCard/VBox/Value" unique_id=153472616]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 8.0
-offset_top = 144.0
-offset_right = 34.0
-offset_bottom = 167.0
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_bq384")
+theme_override_font_sizes/font_size = 26
+text = "--"
 
-[node name="HumidityLabel" type="Label" parent="." unique_id=1510942950]
+[node name="Unit" type="Label" parent="Margin/Layout/BodyStack/Body/Metrics/TemperatureCard/VBox/Value" unique_id=1149327266]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(1, 0.541, 0.298, 1)
+theme_override_font_sizes/font_size = 14
+text = "°C"
+vertical_alignment = 2
+theme_override_styles/normal = SubResource("sb_unit")
+
+[node name="HumidityCard" type="PanelContainer" parent="Margin/Layout/BodyStack/Body/Metrics" unique_id=1937466025]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_styles/panel = SubResource("sb_card_hum")
+
+[node name="VBox" type="VBoxContainer" parent="Margin/Layout/BodyStack/Body/Metrics/HumidityCard" unique_id=416180962]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="Caption" type="Label" parent="Margin/Layout/BodyStack/Body/Metrics/HumidityCard/VBox" unique_id=1130911862]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.565, 0.6, 1)
+theme_override_font_sizes/font_size = 10
+text = "HUMIDITÉ"
+
+[node name="Value" type="HBoxContainer" parent="Margin/Layout/BodyStack/Body/Metrics/HumidityCard/VBox" unique_id=1863305047]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="HumidityLabel" type="Label" parent="Margin/Layout/BodyStack/Body/Metrics/HumidityCard/VBox/Value" unique_id=1510942950]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 8.0
-offset_top = 176.0
-offset_right = 35.0
-offset_bottom = 199.0
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_bq384")
+theme_override_font_sizes/font_size = 26
+text = "--"
 
-[node name="ResetCounterLineEdit" type="LineEdit" parent="." unique_id=1805908193]
+[node name="Unit" type="Label" parent="Margin/Layout/BodyStack/Body/Metrics/HumidityCard/VBox/Value" unique_id=556204380]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(0.298, 0.698, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "%"
+vertical_alignment = 2
+theme_override_styles/normal = SubResource("sb_unit")
+
+[node name="CounterCard" type="PanelContainer" parent="Margin/Layout/BodyStack/Body" unique_id=748195622]
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("sb_card_counter")
+
+[node name="HBox" type="HBoxContainer" parent="Margin/Layout/BodyStack/Body/CounterCard" unique_id=1029734483]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="VBox" type="VBoxContainer" parent="Margin/Layout/BodyStack/Body/CounterCard/HBox" unique_id=2073958181]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="Caption" type="Label" parent="Margin/Layout/BodyStack/Body/CounterCard/HBox/VBox" unique_id=1460517706]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.565, 0.6, 1)
+theme_override_font_sizes/font_size = 10
+text = "COMPTEUR"
+
+[node name="CounterLabel" type="Label" parent="Margin/Layout/BodyStack/Body/CounterCard/HBox/VBox" unique_id=610067910]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_bq384")
+theme_override_font_sizes/font_size = 22
+text = "--"
+
+[node name="ResetCounterLineEdit" type="LineEdit" parent="Margin/Layout/BodyStack/Body/CounterCard/HBox" unique_id=1805908193]
 unique_name_in_owner = true
 visible = false
-layout_mode = 0
-offset_left = 224.0
-offset_top = 144.0
-offset_right = 293.0
-offset_bottom = 192.0
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
 
-[node name="RedLedPowerSpinBox" type="SpinBox" parent="." unique_id=758932509]
+[node name="ResetCounterButton" type="Button" parent="Margin/Layout/BodyStack/Body/CounterCard/HBox" unique_id=1863397424]
 unique_name_in_owner = true
-layout_mode = 0
-offset_top = 240.0
-offset_right = 87.0
-offset_bottom = 288.0
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+size_flags_vertical = 4
+text = "↺  RESET"
+
+[node name="LedCard" type="PanelContainer" parent="Margin/Layout/BodyStack/Body" unique_id=1361830452]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_styles/panel = SubResource("sb_card_led")
+
+[node name="VBox" type="VBoxContainer" parent="Margin/Layout/BodyStack/Body/LedCard" unique_id=1784553120]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Top" type="HBoxContainer" parent="Margin/Layout/BodyStack/Body/LedCard/VBox" unique_id=1209354683]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="LedPreview" type="Panel" parent="Margin/Layout/BodyStack/Body/LedCard/VBox/Top" unique_id=957311862]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+
+[node name="Caption" type="Label" parent="Margin/Layout/BodyStack/Body/LedCard/VBox/Top" unique_id=1655408119]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.55, 0.565, 0.6, 1)
+theme_override_font_sizes/font_size = 10
+text = "LED RGB"
+
+[node name="TurnOffLedPowerButton" type="Button" parent="Margin/Layout/BodyStack/Body/LedCard/VBox/Top" unique_id=1187531115]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+text = "ALLUMER"
+
+[node name="RandomLedPowerButton" type="Button" parent="Margin/Layout/BodyStack/Body/LedCard/VBox/Top" unique_id=1294868369]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+text = "ALÉATOIRE"
+
+[node name="Channels" type="HBoxContainer" parent="Margin/Layout/BodyStack/Body/LedCard/VBox" unique_id=1590427518]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="Red" type="HBoxContainer" parent="Margin/Layout/BodyStack/Body/LedCard/VBox/Channels" unique_id=401827360]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 3
+
+[node name="Letter" type="Label" parent="Margin/Layout/BodyStack/Body/LedCard/VBox/Channels/Red" unique_id=1820461837]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.353, 0.353, 1)
+theme_override_fonts/font = ExtResource("5_bq384")
+theme_override_font_sizes/font_size = 14
+text = "R"
+
+[node name="RedLedPowerSpinBox" type="SpinBox" parent="Margin/Layout/BodyStack/Body/LedCard/VBox/Channels/Red" unique_id=758932509]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+size_flags_horizontal = 3
 max_value = 255.0
 rounded = true
+alignment = 1
 
-[node name="GreenLedPowerSpinBox" type="SpinBox" parent="." unique_id=446656574]
+[node name="Green" type="HBoxContainer" parent="Margin/Layout/BodyStack/Body/LedCard/VBox/Channels" unique_id=1065282394]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 3
+
+[node name="Letter" type="Label" parent="Margin/Layout/BodyStack/Body/LedCard/VBox/Channels/Green" unique_id=530712648]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.298, 0.851, 0.482, 1)
+theme_override_fonts/font = ExtResource("5_bq384")
+theme_override_font_sizes/font_size = 14
+text = "G"
+
+[node name="GreenLedPowerSpinBox" type="SpinBox" parent="Margin/Layout/BodyStack/Body/LedCard/VBox/Channels/Green" unique_id=446656574]
 unique_name_in_owner = true
-visible = false
-layout_mode = 0
-offset_left = 104.0
-offset_top = 240.0
-offset_right = 191.0
-offset_bottom = 288.0
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+size_flags_horizontal = 3
 max_value = 255.0
 rounded = true
+alignment = 1
 
-[node name="BlueLedPowerSpinBox" type="SpinBox" parent="." unique_id=63423584]
+[node name="Blue" type="HBoxContainer" parent="Margin/Layout/BodyStack/Body/LedCard/VBox/Channels" unique_id=1442183067]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 3
+
+[node name="Letter" type="Label" parent="Margin/Layout/BodyStack/Body/LedCard/VBox/Channels/Blue" unique_id=96537034]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.298, 0.553, 1, 1)
+theme_override_fonts/font = ExtResource("5_bq384")
+theme_override_font_sizes/font_size = 14
+text = "B"
+
+[node name="BlueLedPowerSpinBox" type="SpinBox" parent="Margin/Layout/BodyStack/Body/LedCard/VBox/Channels/Blue" unique_id=63423584]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 208.0
-offset_top = 240.0
-offset_right = 295.0
-offset_bottom = 288.0
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+size_flags_horizontal = 3
 max_value = 255.0
 rounded = true
+alignment = 1
 
-[node name="TurnOffLedPowerButton" type="Button" parent="." unique_id=1187531115]
+[node name="DisconnectedMask" type="Panel" parent="Margin/Layout/BodyStack" unique_id=1263015581]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 96.0
-offset_top = 312.0
-offset_right = 157.0
-offset_bottom = 360.0
+layout_mode = 2
+theme_override_styles/panel = SubResource("sb_mask")
 
-[node name="RandomLedPowerButton" type="Button" parent="." unique_id=1294868369]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 184.0
-offset_top = 312.0
-offset_right = 253.0
-offset_bottom = 360.0
+[node name="Center" type="VBoxContainer" parent="Margin/Layout/BodyStack/DisconnectedMask" unique_id=1914403362]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 2
+alignment = 1
 
-[node name="IDLabel" type="Label" parent="." unique_id=614588024]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 16.0
-offset_top = 51.0
-offset_right = 320.0
-offset_bottom = 83.0
-theme_override_fonts/font = ExtResource("7_f7tlc")
-theme_override_font_sizes/font_size = 20
-text = "node_id: ∅"
+[node name="MaskIcon" type="TextureRect" parent="Margin/Layout/BodyStack/DisconnectedMask/Center" unique_id=1739520746]
+modulate = Color(0.55, 0.565, 0.6, 1)
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+texture = ExtResource("4_bq384")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MaskTitle" type="Label" parent="Margin/Layout/BodyStack/DisconnectedMask/Center" unique_id=687104525]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_bq384")
+theme_override_font_sizes/font_size = 15
+text = "CAPTEUR DÉCONNECTÉ"
+horizontal_alignment = 1
+
+[node name="MaskSubtitle" type="Label" parent="Margin/Layout/BodyStack/DisconnectedMask/Center" unique_id=1355808034]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.565, 0.6, 1)
+theme_override_font_sizes/font_size = 11
+text = "En attente du heartbeat…"
+horizontal_alignment = 1

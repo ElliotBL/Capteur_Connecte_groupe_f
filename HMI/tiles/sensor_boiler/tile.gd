@@ -11,14 +11,22 @@ const SUB_STATUS_HUMIDITY = "status_" + DEVICE_NAME + "_humidity"
 const SUB_CMD_LED_POWER = "cmd_" + DEVICE_NAME + "_led_power"
 const SUB_STATUS_LED_POWER = "status_" + DEVICE_NAME + "_led_power"
 const MAX_LED_POWER = 255
-const MASK_Color = Color(0.5, 0.5, 0.5, 0.5)
+const MASK_FADE_S := 0.25
+const COLOR_ONLINE := Color(0.239, 0.863, 0.518)
+const COLOR_OFFLINE := Color(0.55, 0.565, 0.6)
 const HB_TIMEOUT_S := 3.5
 const HB_BLINK_S := 0.5
 
 # ---- VARIABLES ----
 var _node_id: int = -1
 var _seconds_since_hb := INF
-var _led_is_on: bool = false
+var _led_is_on: bool = false:
+	set(value):
+		_led_is_on = value
+		if is_node_ready(): _update_led_button()
+var _mask_tween: Tween
+var _led_preview_style := StyleBoxFlat.new()
+var _led_card_style: StyleBoxFlat
 var _connected: bool = false:
 	set(value):
 		if value == _connected: return
@@ -33,6 +41,8 @@ var _connected: bool = false:
 # Initialise les interactions de l'interface et associe les boutons aux commandes envoyées au capteur.
 func _ready() -> void:
 	super() 
+	_setup_led_preview()
+	_apply_connection_state(_connected, true)
 	%ResetCounterButton.pressed.connect(func(): 
 		var buffer = StreamPeerBuffer.new()
 		buffer.put_32(int(%ResetCounterLineEdit.text))
@@ -90,13 +100,13 @@ func on_message(subject_name: String, source_id: int, payload: PackedByteArray) 
 	if source_id != _node_id: return 
 	if subject_name == SUB_STATUS_COUNTER:
 		if payload.size() != OCTET_SIZE: return 
-		%CounterLabel.text = "Compteur : %d" % payload.decode_u32(0)
+		%CounterLabel.text = "%d" % payload.decode_u32(0)
 	if subject_name == SUB_STATUS_TEMPERATURE:
 		if payload.size() != OCTET_SIZE: return
-		%TemperatureLabel.text = "Température : %.1f °C" % payload.decode_float(0)
+		%TemperatureLabel.text = "%.1f" % payload.decode_float(0)
 	if subject_name == SUB_STATUS_HUMIDITY:
 		if payload.size() != OCTET_SIZE: return
-		%HumidityLabel.text = "Humidité : %.1f %%" % payload.decode_float(0)
+		%HumidityLabel.text = "%.1f" % payload.decode_float(0)
 	if subject_name == SUB_STATUS_LED_POWER:
 		if payload.size() != OCTET_SIZE * 3: return
 		var red = payload.decode_u32(0)
@@ -129,20 +139,65 @@ func set_controls_enabled(node: Node, enabled: bool) -> void:
 
 # Met à jour l'interface lors de la connexion du capteur et autorise l'utilisation de ses commandes.
 func _on_sensor_connected():
-	%IDLabel.text = "node_id: %d" % _node_id
-	%ConnectedIcon.state = true
-	
-	%HBoxContainer.modulate = Color(1, 1, 1, 1)
-	set_controls_enabled(%HBoxContainer, true)
+	_apply_connection_state(true)
 
 
 # Met l'interface en état déconnecté et désactive les commandes tant que le capteur n'est pas disponible.
 func _on_sensor_disconnected():
-	%IDLabel.text = "node_id: ∅"
-	%ConnectedIcon.state = false
-	
-	%HBoxContainer.modulate = MASK_Color
-	set_controls_enabled(%HBoxContainer, false)
+	_apply_connection_state(false)
+
+
+# Applique l'état de connexion à l'en-tête, active/désactive les commandes et affiche ou masque le voile gris.
+func _apply_connection_state(connected: bool, instant := false) -> void:
+	%IDLabel.text = ("node_id: %d" % _node_id) if connected else "node_id: ∅"
+	%StatusLabel.text = "● EN LIGNE" if connected else "● HORS LIGNE"
+	%StatusLabel.add_theme_color_override("font_color", COLOR_ONLINE if connected else COLOR_OFFLINE)
+	%ConnectedIcon.state = connected
+	set_controls_enabled(%Body, connected)
+	_show_mask(not connected, instant)
+
+
+# Affiche (fondu) le masque gris posé par-dessus le contenu de la tuile ; il bloque aussi les appuis.
+func _show_mask(mask_visible: bool, instant := false) -> void:
+	var mask: Control = %DisconnectedMask
+	if _mask_tween: _mask_tween.kill()
+	if instant:
+		mask.visible = mask_visible
+		mask.modulate.a = 1.0 if mask_visible else 0.0
+		return
+	mask.visible = true
+	_mask_tween = create_tween()
+	_mask_tween.tween_property(mask, "modulate:a", 1.0 if mask_visible else 0.0, MASK_FADE_S).set_trans(Tween.TRANS_QUAD)
+	if not mask_visible:
+		_mask_tween.tween_callback(func(): mask.visible = false)
+
+
+# Prépare la pastille de couleur de la LED et la relie aux trois SpinBox.
+func _setup_led_preview() -> void:
+	_led_preview_style.set_corner_radius_all(8)
+	_led_preview_style.corner_detail = 8
+	_led_preview_style.set_border_width_all(1)
+	_led_preview_style.border_color = Color(1, 1, 1, 0.25)
+	%LedPreview.add_theme_stylebox_override("panel", _led_preview_style)
+	_led_card_style = (%LedCard.get_theme_stylebox("panel") as StyleBoxFlat).duplicate()  # propre à cette instance
+	%LedCard.add_theme_stylebox_override("panel", _led_card_style)
+	for spin_box in [%RedLedPowerSpinBox, %GreenLedPowerSpinBox, %BlueLedPowerSpinBox]:
+		spin_box.value_changed.connect(func(_v): _update_led_preview())
+	_update_led_preview()
+	_update_led_button()
+
+
+# Colore la pastille et le liseré de la carte LED avec la couleur des SpinBox.
+func _update_led_preview() -> void:
+	var color := Color8(int(%RedLedPowerSpinBox.value), int(%GreenLedPowerSpinBox.value), int(%BlueLedPowerSpinBox.value))
+	_led_preview_style.bg_color = color
+	if _led_card_style:
+		_led_card_style.border_color = color if color.v > 0.05 else Color(0.29, 0.31, 0.345)
+
+
+# Le bouton ON/OFF indique l'action qu'il va déclencher.
+func _update_led_button() -> void:
+	%TurnOffLedPowerButton.text = "ÉTEINDRE" if _led_is_on else "ALLUMER"
 
 # Actualise le délai de réception du heartbeat et confirme la connexion lorsque le message provient du capteur attendu.
 func _on_hb(source_id: int):

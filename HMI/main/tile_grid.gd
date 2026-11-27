@@ -45,7 +45,7 @@ func _notification(what: int) -> void:
 		var cell := _cell_size()
 		var i := 0
 		for c in _get_visible_children():
-			var col := i / rows   # division entière
+			var col := floori(float(i) / rows)   # division entière
 			var row := i % rows
 			fit_child_in_rect(c, Rect2(
 				Vector2(col * (cell.x + spacing.x), row * (cell.y + spacing.y)),
